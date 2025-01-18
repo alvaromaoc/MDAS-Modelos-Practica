@@ -22,4 +22,4 @@ jobs:
           cache: gradle
 
       - name: Build
-        run: ./gradlew clean build
+        run: .stages/commit-stage.sh
