@@ -22,7 +22,7 @@ jobs:
           cache: gradle
 
       - name: Build
-        run: ./gradlew clean build --no-daemon
+        run: ./gradlew clean build
 
       - name: Login to Quay.io
         uses: docker/login-action@v3
