@@ -1,9 +1,9 @@
-name: Build, push and deploy
+name: Develop - Build, push and deploy
 
 on:
   push:
     branches:
-      - develop
+      - 'develop'
 
 jobs:
   build:
@@ -37,4 +37,4 @@ jobs:
         run: oc login --token=${{ secrets.OPENSHIFT_TOKEN }} --server=${{ vars.OPENSHIFT_SERVER }}
 
       - name: Build
-        run: .stages/integration-stage.sh
+        run: .stages/integration-stage.sh develop
