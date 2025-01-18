@@ -22,7 +22,4 @@ jobs:
           cache: gradle
 
       - name: Build
-        run: ./gradlew clean build -x test --no-daemon
-
-      - name: Run Tests
-        run: ./gradlew test
+        run: ./gradlew clean build --no-daemon
