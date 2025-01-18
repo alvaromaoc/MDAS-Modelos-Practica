@@ -40,7 +40,7 @@ jobs:
           oc: 4
 
       - name: Log in to OpenShift
-        run: oc login --token=${{ env.OPENSHIFT_TOKEN }} --server=${{ env.OPENSHIFT_SERVER }}
+        run: oc login --token=${{ secrets.OPENSHIFT_TOKEN }} --server=${{ vars.OPENSHIFT_SERVER }}
 
       - name: Deploy
         run: ./gradlew deploy
