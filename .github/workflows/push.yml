@@ -1,0 +1,51 @@
+name: Build, push and deploy
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '21'
+          cache: gradle
+
+      - name: Build
+        run: ./gradlew clean build -x test --no-daemon
+
+      - name: Run Tests
+        run: ./gradlew test
+
+      - name: Login to Quay.io
+        uses: docker/login-action@v3
+        with:
+          registry: quay.io
+          username: ${{ vars.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+
+      - name: Push to registry
+        run: ./gradlew build -Dquarkus.container-image.push=true
+
+      - name: Install oc
+        uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          oc: 4
+
+      - name: Log in to OpenShift
+        run: oc login --token=${{ env.OPENSHIFT_TOKEN }} --server=${{ env.OPENSHIFT_SERVER }}
+
+      - name: Deploy
+        run: |
+          echo "Deployed"
+          # ./gradlew deploy -Dquarkus.kubernetes.namespace=modelos-dev -Dquarkus.kubernetes.deploy=true
