@@ -10,11 +10,20 @@ import static org.hamcrest.CoreMatchers.is;
 class GreetingResourceIT {
 
     @Test
-    void testHelloEndpoint() {
+    void when_helloWithoutParams_then_greetingWithoutName() {
         given()
           .when().get("/hello")
           .then()
              .statusCode(200)
              .body(is("Hello from Quarkus REST"));
+    }
+
+    @Test
+    void when_helloWithoutParam_then_greetingToGivenName() {
+        given()
+                .when().queryParam("name", "Alex").get("/hello")
+                .then()
+                .statusCode(200)
+                .body(is("Hello Alex from Quarkus REST"));
     }
 }
