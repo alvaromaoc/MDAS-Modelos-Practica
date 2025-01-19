@@ -41,4 +41,5 @@ jobs:
       - name: Build, push and deploy
         run: |
           environment="$(.stages/resolve-environment.sh "${{ github.ref_name }}")"
-          .stages/integration-stage.sh "${environment}"
+          version="$(.stages/resolve-version.sh "${{ github.ref_name }}")"
+          .stages/integration-stage.sh "${environment}" "${version}"

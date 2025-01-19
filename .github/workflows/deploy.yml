@@ -11,6 +11,10 @@ on:
           - 'hotfix'
         description: Environment
         required: true
+      version:
+        type: string
+        description: Version
+        required: true
 
 jobs:
   build:
@@ -37,4 +41,4 @@ jobs:
         run: oc login --token=${{ secrets.OPENSHIFT_TOKEN }} --server=${{ vars.OPENSHIFT_SERVER }}
 
       - name: Deploy
-        run: .stages/promotion-stage.sh ${{ inputs.environment }}
+        run: .stages/promotion-stage.sh ${{ inputs.environment }} ${{ inputs.version }}
