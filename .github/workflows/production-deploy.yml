@@ -3,8 +3,7 @@ name: Deploy
 on:
   pull_request:
     branches:
-      - 'release/**'
-      - 'hotfix/**'
+      - 'main'
     types:
       - 'closed'
 
