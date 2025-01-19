@@ -1,13 +1,15 @@
-name: Develop - Build, push and deploy
+name: Build, push and deploy
 
 on:
   push:
     branches:
       - 'develop'
+      - 'release/**'
+      - 'hotfix/**'
 
 jobs:
   build:
-    name: Build and Test
+    name: Build, push and deploy
     runs-on: ubuntu-latest
 
     steps:
@@ -36,5 +38,7 @@ jobs:
       - name: Log in to OpenShift
         run: oc login --token=${{ secrets.OPENSHIFT_TOKEN }} --server=${{ vars.OPENSHIFT_SERVER }}
 
-      - name: Build
-        run: .stages/integration-stage.sh develop
+      - name: Build, push and deploy
+        run: |
+          environment="$(.stages/resolve-environment.sh "${{ github.ref_name }}")"
+          .stages/integration-stage.sh "${environment}"

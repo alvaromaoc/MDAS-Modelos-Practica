@@ -1,13 +1,15 @@
-name: Release - Pull request
+name: Pull request
 
 on:
   pull_request:
     branches:
+      - 'develop'
       - 'release/**'
+      - 'hotfix/**'
 
 jobs:
   build:
-    name: Build and Test
+    name: Build and run tests
     runs-on: ubuntu-latest
 
     steps:
@@ -21,5 +23,5 @@ jobs:
           java-version: '21'
           cache: gradle
 
-      - name: Build
+      - name: Build and run tests
         run: .stages/commit-stage.sh
