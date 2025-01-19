@@ -1,0 +1,37 @@
+name: Deploy
+
+on:
+  pull_request:
+    branches:
+      - 'release/**'
+      - 'hotfix/**'
+    types:
+      - 'closed'
+
+jobs:
+  build:
+    name: Deploy
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.merged == true }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '21'
+          cache: gradle
+
+      - name: Install oc
+        uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          oc: 4
+
+      - name: Log in to OpenShift
+        run: oc login --token=${{ secrets.OPENSHIFT_TOKEN }} --server=${{ vars.OPENSHIFT_SERVER }}
+
+      - name: Deploy
+        run: .stages/promotion-stage.sh production
