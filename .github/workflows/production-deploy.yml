@@ -1,14 +1,18 @@
-name: Release - Build, push and deploy
+name: Deploy
 
 on:
-  push:
+  pull_request:
     branches:
       - 'release/**'
+      - 'hotfix/**'
+    types:
+      - 'closed'
 
 jobs:
   build:
-    name: Build and Test
+    name: Deploy
     runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.merged == true }}
 
     steps:
       - name: Checkout Code
@@ -21,13 +25,6 @@ jobs:
           java-version: '21'
           cache: gradle
 
-      - name: Login to Quay.io
-        uses: docker/login-action@v3
-        with:
-          registry: quay.io
-          username: ${{ vars.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_PASSWORD }}
-
       - name: Install oc
         uses: redhat-actions/openshift-tools-installer@v1
         with:
@@ -36,5 +33,5 @@ jobs:
       - name: Log in to OpenShift
         run: oc login --token=${{ secrets.OPENSHIFT_TOKEN }} --server=${{ vars.OPENSHIFT_SERVER }}
 
-      - name: Build
-        run: .stages/integration-stage.sh release
+      - name: Deploy
+        run: .stages/promotion-stage.sh production

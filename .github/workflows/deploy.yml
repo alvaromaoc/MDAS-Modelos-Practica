@@ -8,6 +8,7 @@ on:
         options:
           - 'develop'
           - 'release'
+          - 'hotfix'
         description: Environment
         required: true
 
