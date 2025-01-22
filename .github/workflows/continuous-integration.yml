@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # It exists a fetch-tags, but currently it is experiencing issues https://github.com/actions/checkout/issues/1471
 
       - name: Set Up JDK
         uses: actions/setup-java@v4
@@ -39,6 +41,8 @@ jobs:
         run: oc login --token=${{ secrets.OPENSHIFT_TOKEN }} --server=${{ vars.OPENSHIFT_SERVER }}
 
       - name: Build, push and deploy
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           environment="$(.stages/resolve-environment.sh "${{ github.ref_name }}")"
           version="$(.stages/resolve-version.sh "${{ github.ref_name }}")"
