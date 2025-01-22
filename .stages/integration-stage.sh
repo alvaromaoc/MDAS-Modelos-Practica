@@ -25,3 +25,9 @@ echo "Creating version '${version}' and deploying it into '${environment}' envir
   -Dquarkus.container-image.build=true \
   -Dquarkus.container-image.push=true \
   -Dquarkus.openshift.deploy=true
+
+if [ "${environment}" = "develop" ]; then
+  ./gradlew sonar \
+    -Pversion="${version}" \
+    -Dsonar.branch.name=develop
+fi
