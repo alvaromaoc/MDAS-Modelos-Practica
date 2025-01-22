@@ -8,10 +8,11 @@ function newTag() {
 
   local major=$(echo "$latestTag" | cut -d '.' -f1)
   local minor=$(echo "$latestTag" | cut -d '.' -f2)
+  local patch=$(echo "$latestTag" | cut -d '.' -f3)
 
-  local newMinor=$((minor + 1))
+  local newPatch=$((patch + 1))
 
-  echo "${major}.${newMinor}.0-SNAPSHOT"
+  echo "${major}.${minor}.${newPatch}-SNAPSHOT"
 }
 
 branch="$1"
