@@ -1,0 +1,33 @@
+name: Create relase
+
+on:
+  workflow_dispatch:
+    inputs:
+      type:
+        type: choice
+        options:
+          - 'release'
+          - 'hotfix'
+        description: Type
+        required: true
+
+jobs:
+  build:
+    name: Create release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.type == 'release' && 'develop' || inputs.type == 'hotfix' && 'master' }}
+          fetch-depth: 0 # It exists a fetch-tags, but currently it is experiencing issues https://github.com/actions/checkout/issues/1471
+
+      - name: Check version
+        id: version
+        run: echo "version=$(scripts/next-version.sh)" >> $GITHUB_OUTPUT
+
+      - name: Create branch
+        run: |
+          git checkout -b "${{ inputs.type }}/${{ steps.version.outputs.version }}"
+          git push origin "${{ inputs.type }}/${{ steps.version.outputs.version }}"
