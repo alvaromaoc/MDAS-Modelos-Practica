@@ -1,4 +1,4 @@
-name: Build, push and deploy
+name: Develop integration custom branch
 
 on:
   workflow_dispatch:
