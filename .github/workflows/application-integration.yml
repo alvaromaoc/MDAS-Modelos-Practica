@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - 'develop'
-      - 'release/**'
-      - 'hotfix/**'
 
 jobs:
   build:
@@ -40,10 +38,12 @@ jobs:
       - name: Log in to OpenShift
         run: oc login --token=${{ secrets.OPENSHIFT_TOKEN }} --server=${{ vars.OPENSHIFT_SERVER }}
 
+      - name: Check version
+        id: version
+        run: echo "version=$(scripts/next-version.sh)-SNAPSHOT" >> $GITHUB_OUTPUT
+
       - name: Build, push and deploy
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          environment="$(.stages/resolve-environment.sh "${{ github.ref_name }}")"
-          version="$(.stages/resolve-version.sh "${{ github.ref_name }}")"
-          .stages/integration-stage.sh "${environment}" "${version}"
+          cicd/application-integration.sh develop "${{ steps.version.outputs.version }}" develop

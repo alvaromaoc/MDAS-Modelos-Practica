@@ -19,8 +19,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # It exists a fetch-tags, but currently it is experiencing issues https://github.com/actions/checkout/issues/1471
 
       - name: Set Up JDK
         uses: actions/setup-java@v4
@@ -37,16 +35,16 @@ jobs:
       - name: Log in to OpenShift
         run: oc login --token=${{ secrets.OPENSHIFT_TOKEN }} --server=${{ vars.OPENSHIFT_SERVER }}
 
+      - name: Check version
+        id: version
+        run: echo "version=$(echo "${{ github.event.pull_request.head.ref }}" | cut -d '/' -f2)" >> $GITHUB_OUTPUT
+
       - name: Deploy
-        run: |
-          version="$(.stages/resolve-version.sh "${{ github.event.pull_request.head.ref }}")"
-          .stages/promotion-stage.sh production "${version}"
+        run: cicd/application-deploy.sh production "${{ steps.version.outputs.version }}"
 
       - name: Creating tag
         run: |
           git config --global user.name "Github Actions"
           git config --global user.email "actions@github.com"
-          
-          version="$(.stages/resolve-version.sh "${{ github.event.pull_request.head.ref }}")"
-          git tag "${version}"
-          git push origin "${version}"
+          git tag "${{ steps.version.outputs.version }}"
+          git push origin "${{ steps.version.outputs.version }}"

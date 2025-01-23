@@ -35,6 +35,7 @@ java {
 test {
     systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
 }
+
 compileJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << '-parameters'
@@ -52,16 +53,27 @@ sonar {
     }
 }
 
-test {
-    finalizedBy jacocoTestReport
-}
-
 jacocoTestReport {
-    dependsOn test
     reports {
         xml.required = true
         html.required = true
     }
+}
+
+tasks.named("test") {
+    finalizedBy tasks.named("jacocoTestReport")
+}
+
+tasks.named("jacocoTestReport") {
+    dependsOn tasks.named("test")
+}
+
+tasks.named("sonar") {
+    dependsOn tasks.named("jacocoTestReport")
+}
+
+tasks.named("quarkusBuild") {
+    mustRunAfter tasks.named("sonar")
 }
 
 
