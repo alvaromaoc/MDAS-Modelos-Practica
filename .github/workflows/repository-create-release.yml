@@ -11,6 +11,9 @@ on:
         description: Type
         required: true
 
+permissions:
+  contents:
+
 jobs:
   build:
     name: Create release
@@ -29,5 +32,7 @@ jobs:
 
       - name: Create branch
         run: |
+          git config --global user.name "Github Actions"
+          git config --global user.email "actions@github.com"
           git checkout -b "${{ inputs.type }}/${{ steps.version.outputs.version }}"
           git push origin "${{ inputs.type }}/${{ steps.version.outputs.version }}"
