@@ -1,4 +1,4 @@
-name: Deploy
+name: Manual deploy
 
 on:
   workflow_dispatch:
@@ -41,4 +41,4 @@ jobs:
         run: oc login --token=${{ secrets.OPENSHIFT_TOKEN }} --server=${{ vars.OPENSHIFT_SERVER }}
 
       - name: Deploy
-        run: .stages/promotion-stage.sh ${{ inputs.environment }} ${{ inputs.version }}
+        run: cicd/application-deploy.sh ${{ inputs.environment }} ${{ inputs.version }}

@@ -3,7 +3,7 @@ version="$2"
 
 # Guard clause to ensure environment is one of the available
 case "$environment" in
-  develop|release|hotfix|production)
+  integration|staging|hotfix|production)
     ;;
   *)
     echo "Error: Invalid environment '${environment}'"
@@ -21,13 +21,6 @@ echo "Creating version '${version}' and deploying it into '${environment}' envir
 
 ./gradlew clean build \
   -Pversion="${version}" \
-  -Dquarkus.openshift.name="modelos-${environment}" \
   -Dquarkus.container-image.build=true \
   -Dquarkus.container-image.push=true \
   -Dquarkus.openshift.deploy=true
-
-if [ "${environment}" = "develop" ]; then
-  ./gradlew sonar \
-    -Pversion="${version}" \
-    -Dsonar.branch.name=develop
-fi

@@ -1,4 +1,4 @@
-name: Pull request
+name: Check
 
 on:
   pull_request:
@@ -24,6 +24,4 @@ jobs:
           cache: gradle
 
       - name: Build and run tests
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: .stages/commit-stage.sh "${{ github.event.pull_request.head.ref }}"
+        run: cicd/application-check.sh

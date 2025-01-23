@@ -1,5 +1,6 @@
 environment="$1"
 version="$2"
+branch="$3"
 
 # Guard clause to ensure environment is one of the available
 case "$environment" in
@@ -19,9 +20,9 @@ fi
 
 echo "Creating version '${version}' and deploying it into '${environment}' environment"
 
-./gradlew clean build -x test \
+./gradlew clean build sonar \
   -Pversion="${version}" \
-  -Dquarkus.openshift.name="modelos-${environment}" \
-  -Dquarkus.container-image.build=false \
-  -Dquarkus.container-image.push=false \
+  -Dsonar.branch.name="${branch}" \
+  -Dquarkus.container-image.build=true \
+  -Dquarkus.container-image.push=true \
   -Dquarkus.openshift.deploy=true
