@@ -17,10 +17,11 @@ if ! echo "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-SNAPSHOT)?$'; then
     exit 1
 fi
 
-echo "Creating version '${version}' and deploying it into '${environment}' environment"
+echo "Deploying version '${version}' into '${environment}' environment"
 
 ./gradlew clean build \
   -Pversion="${version}" \
   -Dquarkus.container-image.build=false \
   -Dquarkus.container-image.push=false \
-  -Dquarkus.openshift.deploy=true
+  -Dquarkus.openshift.deploy=true \
+  -Dquarkus.openshift.name="modelos-${environment}"
