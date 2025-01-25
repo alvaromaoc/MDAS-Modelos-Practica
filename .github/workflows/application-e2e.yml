@@ -1,0 +1,35 @@
+name: E2E tests
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  build:
+    name: Run E2E tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Check head branch
+        if: ${{ !(startsWith(event.pull_request.head.ref, 'release/') || startsWith(event.pull_request.head.ref, 'hotfix/')) }}
+        run: exit 1
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '21'
+          cache: gradle
+
+      - name: Check environment
+        id: environment
+        run: echo "environment=$(echo "${{ github.ref_name }}" | cut -d '/' -f1)" >> $GITHUB_OUTPUT
+
+      - name: Run E2E tests
+        env:
+          E2E_ENV: ${{ steps.environment.outputs.environment }}
+        run: cicd/application-e2e.sh
