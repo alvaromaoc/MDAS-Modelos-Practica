@@ -25,4 +25,5 @@ echo "Creating version '${version}' and deploying it into '${environment}' envir
   -Dsonar.branch.name="${branch}" \
   -Dquarkus.container-image.build=true \
   -Dquarkus.container-image.push=true \
-  -Dquarkus.openshift.deploy=true
+  -Dquarkus.openshift.deploy=true \
+  -Dquarkus.openshift.name="modelos-${environment}"

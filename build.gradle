@@ -60,6 +60,23 @@ jacocoTestReport {
     }
 }
 
+sourceSets {
+    'e2e' {
+        java {
+            compileClasspath += test.compileClasspath
+            runtimeClasspath += test.runtimeClasspath
+            srcDir 'src/e2e/java'
+        }
+    }
+}
+
+tasks.register("e2e", Test) {
+    testClassesDirs = sourceSets.e2e.output.classesDirs
+    classpath = sourceSets.e2e.runtimeClasspath
+
+    useJUnitPlatform()
+}
+
 tasks.named("test") {
     finalizedBy tasks.named("jacocoTestReport")
 }

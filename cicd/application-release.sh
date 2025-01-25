@@ -3,7 +3,7 @@ version="$2"
 
 # Guard clause to ensure environment is one of the available
 case "$environment" in
-  integration|staging|hotfix|production)
+  develop|release|hotfix|production)
     ;;
   *)
     echo "Error: Invalid environment '${environment}'"
@@ -23,4 +23,5 @@ echo "Creating version '${version}' and deploying it into '${environment}' envir
   -Pversion="${version}" \
   -Dquarkus.container-image.build=true \
   -Dquarkus.container-image.push=true \
-  -Dquarkus.openshift.deploy=true
+  -Dquarkus.openshift.deploy=true \
+  -Dquarkus.openshift.name="modelos-${environment}"
