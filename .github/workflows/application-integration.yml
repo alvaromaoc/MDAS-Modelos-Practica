@@ -46,4 +46,4 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          cicd/application-integration.sh develop "${{ steps.version.outputs.version }}" develop
+          cicd/application-integration.sh "${{ steps.version.outputs.version }}"

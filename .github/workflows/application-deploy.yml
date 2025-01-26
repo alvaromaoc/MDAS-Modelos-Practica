@@ -40,7 +40,7 @@ jobs:
         run: echo "version=$(echo "${{ github.event.pull_request.head.ref }}" | cut -d '/' -f2)" >> $GITHUB_OUTPUT
 
       - name: Deploy
-        run: cicd/application-deploy.sh production "${{ steps.version.outputs.version }}"
+        run: cicd/application-deploy.sh "${{ steps.version.outputs.version }}"
 
       - name: Creating tag
         run: |

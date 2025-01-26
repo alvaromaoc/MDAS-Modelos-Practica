@@ -1,10 +1,9 @@
 name: Release integration
 
 on:
-  push:
+  pull_request:
     branches:
-      - 'release/**'
-      - 'hotfix/**'
+      - 'main'
 
 jobs:
   build:
@@ -14,6 +13,10 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Check head branch
+        if: ${{ !(startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix/')) }}
+        run: exit 1
 
       - name: Set Up JDK
         uses: actions/setup-java@v4
@@ -39,12 +42,14 @@ jobs:
 
       - name: Check environment
         id: environment
-        run: echo "environment=$(echo "${{ github.ref_name }}" | cut -d '/' -f1)" >> $GITHUB_OUTPUT
+        run: echo "environment=$(echo "${{ github.event.pull_request.head.ref }}" | cut -d '/' -f1)" >> $GITHUB_OUTPUT
 
       - name: Check version
         id: version
-        run: echo "version=$(echo "${{ github.ref_name }}" | cut -d '/' -f2)" >> $GITHUB_OUTPUT
+        run: echo "version=$(echo "${{ github.event.pull_request.head.ref }}" | cut -d '/' -f2)" >> $GITHUB_OUTPUT
 
       - name: Build, push and deploy
+        env:
+          E2E_ENV: ${{ steps.environment.outputs.environment }}
         run: |
           cicd/application-release.sh "${{ steps.environment.outputs.environment }}" "${{ steps.version.outputs.version }}"
