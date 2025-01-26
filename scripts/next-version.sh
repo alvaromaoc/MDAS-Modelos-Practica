@@ -12,7 +12,10 @@ patch=$(echo "$latestTag" | cut -d '.' -f3)
 currentSha=$(git rev-parse --abbrev-ref HEAD)
 commits=$(git rev-list --reverse "${latestTag}".."${currentSha}")
 
+newMinor=$minor
+
 for commit in $commits; do
+
   message="$(git log -n 1 --format=%B "$commit")"
 
   # Increment major version
@@ -33,16 +36,22 @@ for commit in $commits; do
 
   # Increment minor version
 
+  if [ "${newMinor}" != "${minor}" ]; then
+    continue
+  fi
+
   # Is <type> = feature ?
   if echo "${message}" | grep -Eq "^(feat)(\(.+\))?:"; then
     newMinor=$((minor + 1))
-    echo "${major}.${newMinor}.0"
-    exit 0
   fi
 
-  # Otherwise increment patch version
-
-  newPatch=$((patch + 1))
-  echo "${major}.${minor}.${newPatch}"
-  exit 0
 done
+
+if [ "${newMinor}" != "${minor}" ]; then
+  echo "${major}.${newMinor}.0"
+  exit 0
+fi
+
+newPatch=$((patch + 1))
+echo "${major}.${minor}.${newPatch}"
+exit 0
