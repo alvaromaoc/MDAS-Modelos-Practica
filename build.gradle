@@ -75,6 +75,7 @@ tasks.register("e2e", Test) {
     classpath = sourceSets.e2e.runtimeClasspath
 
     useJUnitPlatform()
+    mustRunAfter tasks.named("build")
 }
 
 tasks.named("test") {
