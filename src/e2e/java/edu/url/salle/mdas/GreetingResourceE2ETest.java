@@ -9,11 +9,20 @@ import static org.hamcrest.Matchers.is;
 public class GreetingResourceE2ETest extends AbstractE2ETest {
 
     @Test
-    void testGreeting() {
+    void when_helloWithoutParams_then_greetingWithoutName() {
         givenEnvUri()
                 .when().get("/hello")
                 .then()
                 .statusCode(200)
                 .body(is("Hello from Quarkus REST"));
+    }
+
+    @Test
+    void when_helloWithoutParam_then_greetingToGivenName() {
+        givenEnvUri()
+                .when().queryParam("name", "Alex").get("/hello")
+                .then()
+                .statusCode(200)
+                .body(is("Hello Alex from Quarkus REST"));
     }
 }
