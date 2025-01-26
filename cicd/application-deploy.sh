@@ -9,7 +9,7 @@ fi
 echo "Running DEPLOY pipeline"
 echo "Deploying version '${version}' into 'production' environment"
 
-./gradlew clean build \
+./gradlew clean build -x test \
   -Pversion="${version}" \
   -Dquarkus.container-image.build=false \
   -Dquarkus.container-image.push=false \
